@@ -8,6 +8,9 @@ RUN apt update \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip
 
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
 WORKDIR /var/www/symfony
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
