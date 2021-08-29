@@ -32,11 +32,11 @@ class CurrentForecastProvider implements CurrentForecastProviderInterface
         } catch (RequestException $e) {
             $response = json_decode($e->getResponse()->getBody()->getContents());
 
-            throw new Exception('Cannot fetch forecast data from OpenWeatherMap: ' . $response->message);
+            throw new Exception('Cannot fetch forecast from OpenWeatherMap: ' . $response->message);
         }
 
         if ($response->getStatusCode() !== 200) {
-            throw new Exception('Cannot fetch forecast data from OpenWeatherMap: ' . $response->getReasonPhrase());
+            throw new Exception('Cannot fetch forecast from OpenWeatherMap: ' . $response->getReasonPhrase());
         }
 
         $body = json_decode($response->getBody()->getContents());

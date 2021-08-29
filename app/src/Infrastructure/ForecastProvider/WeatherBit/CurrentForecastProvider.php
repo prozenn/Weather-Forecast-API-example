@@ -6,6 +6,7 @@ use App\Domain\Address\Address;
 use App\Infrastructure\ForecastProvider\CurrentForecastProviderInterface;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class CurrentForecastProvider implements CurrentForecastProviderInterface
 {
@@ -20,16 +21,22 @@ class CurrentForecastProvider implements CurrentForecastProviderInterface
 
     public function fetch(Address $address): float
     {
-        $response = $this->client->request('GET', self::API_ENDPOINT_URL, [
-            'query' => [
-                'key' => $this->apiKey,
-                'city' => $address->getCity(),
-                'country' => $address->getCountryCode()
-            ]
-        ]);
+        try {
+            $response = $this->client->request('GET', self::API_ENDPOINT_URL, [
+                'query' => [
+                    'key' => $this->apiKey,
+                    'city' => $address->getCity(),
+                    'country' => $address->getCountryCode()
+                ]
+            ]);
+        } catch (RequestException $e) {
+            $response = json_decode($e->getResponse()->getBody()->getContents());
+
+            throw new Exception('Cannot fetch forecast from WeatherBit: ' . $response->error);
+        }
 
         if ($response->getStatusCode() !== 200) {
-            throw new Exception('Cannot fetch forecast data from WeatherBit: ' . $response->getReasonPhrase());
+            throw new Exception('Cannot fetch forecast from WeatherBit: ' . $response->getReasonPhrase());
         }
 
         $body = json_decode($response->getBody()->getContents());
