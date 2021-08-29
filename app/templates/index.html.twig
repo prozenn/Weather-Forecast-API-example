@@ -7,17 +7,24 @@
         </div>
         <div class="col-12 col-md-6">
             {% if currentTemp is not null %}
-                <div class="alert alert-success" role="alert">Current forecast for {{ city }}, {{ country}} is {{ currentTemp }}</div>
+                <div class="alert alert-success" role="alert">Current forecast for {{ city }}, {{ country }}
+                    is {{ currentTemp }}</div>
+            {% endif %}
+            {% if error %}
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
             {% endif %}
 
             <form class="my-2" action="{{ path('index') }}" method="post">
                 <div class="form-group mb-2">
                     <label for="city">City</label>
-                    <input type="city" class="form-control" id="city" name="city" placeholder="City" value="{{ city }}">
+                    <input type="text" class="form-control" id="city" name="city" placeholder="City" value="{{ city }}">
                 </div>
                 <div class="form-group mb-2">
                     <label for="country">Country</label>
-                    <input type="country" class="form-control" id="country" name="country" placeholder="Country" value="{{ country }}">
+                    <input type="text" class="form-control" id="country" name="country" placeholder="Country" value="{{ country }}">
+                    <input type="hidden" id="country_code" name="country_code" value="{{ countryCode }}"/>
                 </div>
                 <button type="submit" class="btn btn-primary">Check forecast</button>
             </form>
@@ -27,7 +34,8 @@
             {% if forecasts is not empty %}
                 <ul class="list-group">
                     {% for forecast in forecasts %}
-                        <li class="list-group-item">{{ forecast.dateTime|date('Y-m-d H:i:s') }} in {{ forecast.address }}
+                        <li class="list-group-item">{{ forecast.dateTime|date('Y-m-d H:i:s') }}
+                            in {{ forecast.address }}
                             was {{ forecast.temperature }}</li>
                     {% endfor %}
                 </ul>

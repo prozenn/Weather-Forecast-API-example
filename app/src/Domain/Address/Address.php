@@ -6,7 +6,8 @@ class Address
 {
     public function __construct(
         private string $city,
-        private string $country
+        private string $country,
+        private string $countryCode
     )
     {
     }
@@ -31,8 +32,23 @@ class Address
         $this->country = $country;
     }
 
+    public function getCountryCode(): string
+    {
+        return $this->countryCode;
+    }
+
+    public function setCountryCode(string $countryCode): void
+    {
+        $this->countryCode = $countryCode;
+    }
+
     public function getAddress(): string
     {
         return $this->city . ', ' . $this->country;
+    }
+
+    public function getQuerry(): string
+    {
+        return $this->city . ', ' . $this->countryCode;
     }
 }

@@ -20,7 +20,7 @@ class FetchCurrentForecastHandler
 
     public function handle(Address $address): float
     {
-        return $this->cache->get($address->getAddress(), function (ItemInterface $item) use ($address) {
+        return $this->cache->get(str_replace(['(', ')'], '', $address->getAddress()), function (ItemInterface $item) use ($address) {
             $item->expiresAfter(60);
 
             $forecast = $this->fetchCurrentForecasts->fetch($address);

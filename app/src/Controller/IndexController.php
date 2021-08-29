@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Application\Handler\Forecast\FetchCurrentForecastHandler;
 use App\Application\Handler\Forecast\ListForecastsHandler;
 use App\Domain\Address\Address;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,12 +23,18 @@ class IndexController extends AbstractController
     {
         $city = $request->get('city');
         $country = $request->get('country');
+        $countryCode = $request->get('country_code');
         $currentTemp = null;
+        $error = false;
 
         if ($city && $country) {
-            $address = new Address($city, $country);
+            $address = new Address($city, $country, $countryCode);
 
-            $currentTemp = $this->fetchCurrentForecastHandler->handle($address);
+            try {
+                $currentTemp = $this->fetchCurrentForecastHandler->handle($address);
+            } catch (Exception $e) {
+                $error = $e->getMessage();
+            }
         }
 
         $forecasts = $this->listForecastsHandler->handle();
@@ -37,6 +44,8 @@ class IndexController extends AbstractController
             'currentTemp' => $currentTemp,
             'city' => $city,
             'country' => $country,
+            'countryCode' => $countryCode,
+            'error' => $error
         ]);
     }
 }
