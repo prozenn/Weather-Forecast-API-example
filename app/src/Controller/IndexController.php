@@ -21,9 +21,7 @@ class IndexController extends AbstractController
 
     public function index(Request $request): Response
     {
-        $city = $request->get('city');
-        $country = $request->get('country');
-        $countryCode = $request->get('country_code');
+        list($city, $country, $countryCode) = $this->getRequestData($request);
         $currentTemp = null;
         $error = false;
 
@@ -47,5 +45,13 @@ class IndexController extends AbstractController
             'countryCode' => $countryCode,
             'error' => $error
         ]);
+    }
+
+    private function getRequestData(Request $request): array
+    {
+        $city = htmlentities($request->get('city'));
+        $country = htmlentities($request->get('country'));
+        $countryCode = htmlentities($request->get('country_code'));
+        return array($city, $country, $countryCode);
     }
 }
